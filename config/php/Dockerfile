@@ -8,10 +8,8 @@ COPY --from=composer:2.4 /usr/bin/composer /usr/bin/composer
 
 COPY ../../backend/composer.* ./
 
-RUN composer --version && php -v
-
 RUN composer install --prefer-dist --no-dev --no-scripts --no-progress --no-interaction
 
 COPY ../../backend .
 
-RUN composer dump-autoload --optimize
+# RUN composer dump-autoload --optimize

@@ -3,9 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MovieRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 class Movie
@@ -19,21 +18,33 @@ class Movie
     private string $name;
 
     #[ORM\Column(length: 255)]
-    private string $destination;
-
-    #[ORM\Column(length: 255)]
     private string $season;
 
     #[ORM\Column(length: 255)]
     private string $linkToFile;
 
-    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'movies')]
-    private Collection $categories;
+    #[Assert\Choice(callback: 'getDifficultyLevels')]
+    #[ORM\Column(length: 255)]
+    private string $difficulty;
+
+    #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: 'moviesFromStartPoint')]
+    private ?Place $startPoint = null;
+
+    #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: 'moviesToDestination')]
+    private ?Place $destination = null;
+
+    #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: 'moviesToEndpoint')]
+    private ?Place $endPoint = null;
+
 
     public function __construct()
     {
-        $this->categories = new ArrayCollection();
     }
+
+    public static function getDifficultyLevels(): array
+    {
+        return ['easy', 'normal', 'hard'];
+    } 
 
     public function getId(): ?int
     {
@@ -51,19 +62,7 @@ class Movie
 
         return $this;
     }
-
-    public function getDestination(): string
-    {
-        return $this->destination;
-    }
-
-    public function setDestination(string $destination): self
-    {
-        $this->destination = $destination;
-
-        return $this;
-    }
-
+    
     public function getSeason(): string
     {
         return $this->season;
@@ -88,29 +87,50 @@ class Movie
         return $this;
     }
 
-    /**
-     * @return Collection<int, Category>
-     */
-    public function getCategories(): Collection
+    public function getStartPoint(): ?Place
     {
-        return $this->categories;
+        return $this->startPoint;
     }
 
-    public function addCategory(Category $category): self
+    public function setStartPoint(?Place $startPoint): self
     {
-        if (!$this->categories->contains($category)) {
-            $this->categories->add($category);
-            $category->addMovie($this);
-        }
+        $this->startPoint = $startPoint;
 
         return $this;
     }
 
-    public function removeCategory(Category $category): self
+    public function getDestination(): ?Place
     {
-        if ($this->categories->removeElement($category)) {
-            $category->removeMovie($this);
-        }
+        return $this->destination;
+    }
+
+    public function setDestination(?Place $destination): self
+    {
+        $this->destination = $destination;
+
+        return $this;
+    }
+
+    public function getEndPoint(): ?Place
+    {
+        return $this->endPoint;
+    }
+
+    public function setEndPoint(?Place $endPoint): self
+    {
+        $this->endPoint = $endPoint;
+
+        return $this;
+    }
+
+    public function getDifficulty(): ?string
+    {
+        return $this->difficulty;
+    }
+
+    public function setDifficulty(string $difficulty): self
+    {
+        $this->difficulty = $difficulty;
 
         return $this;
     }
