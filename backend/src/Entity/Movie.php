@@ -14,12 +14,14 @@ class Movie
     #[ORM\Column]
     private int $id;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private string $name;
 
     #[ORM\Column(length: 255)]
     private string $season;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private string $linkToFile;
 
