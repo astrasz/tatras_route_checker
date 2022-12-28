@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use OpenApi\Annotations as OA;
 
 #[Route('/api/places')]
 class PlacesController extends AbstractController
@@ -53,12 +54,11 @@ class PlacesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'get_place', methods: ['GET'])]
-    public function getPlace(Place $place): Place
+    public function getPlace(Place $place): Response
     {
         if (!($place instanceof Place) || !$place) {
             return new JsonResponse(["id" => "place not found"], JsonResponse::HTTP_NOT_FOUND);
         }
-
         $json = $this->placesService->serializeToJson($place, ['place']);
 
         return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);

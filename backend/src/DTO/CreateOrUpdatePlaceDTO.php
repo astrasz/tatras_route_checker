@@ -5,7 +5,7 @@ namespace App\DTO;
 use App\DTO\BaseDTO;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class CreatePlaceDTO extends BaseDTO
+class CreateOrUpdatePlaceDTO extends BaseDTO
 {
     #[Assert\NotBlank]
     #[Assert\NotNull]

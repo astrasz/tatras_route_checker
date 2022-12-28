@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\DTO\BaseDTO;
 use App\Entity\Place;
-use App\DTO\CreatePlaceDTO;
+use App\DTO\CreateOrUpdatePlaceDTO;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -22,7 +22,7 @@ class PlacesService
         $this->serializer = $serializer;
     }
 
-    public function createOrUpdate(CreatePlaceDTO $createPlaceDTO, Place $place=null): Place|array
+    public function createOrUpdate(CreateOrUpdatePlaceDTO $createPlaceDTO, Place $place=null): Place|array
     {
             $errors = $this->validator->validate($createPlaceDTO);
     
