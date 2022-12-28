@@ -6,27 +6,37 @@ use App\Repository\PlaceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PlaceRepository::class)]
 class Place
 {
+    #[Groups(['place'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['place'])]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['place'])]
+    #[Assert\NotBlank]
     #[ORM\Column]
     private ?int $altitude = null;
 
+    #[Groups(['place'])]
     #[ORM\OneToMany(mappedBy: 'startPoint', targetEntity: Movie::class)]
     private Collection $moviesFromStartPoint;
 
+    #[Groups(['place'])]
     #[ORM\OneToMany(mappedBy: 'destination', targetEntity: Movie::class)]
     private Collection $moviesToDestination;
 
+    #[Groups(['place'])]
     #[ORM\OneToMany(mappedBy: 'endPoint', targetEntity: Movie::class)]
     private Collection $moviesToEndpoint;
 
