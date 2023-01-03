@@ -3,19 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\Place;
-use App\DTO\CreatePlaceDTO;
-use App\Repository\PlaceRepository;
 use App\Service\PlacesService;
+use App\DTO\CreateOrUpdatePlaceDTO;
+use App\Repository\PlaceRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use OpenApi\Annotations as OA;
 
-#[Route('/api/places')]
+#[Route('api/places')]
 class PlacesController extends AbstractController
 {
     private PlacesService $placesService;
@@ -25,7 +24,7 @@ class PlacesController extends AbstractController
         $this->placesService = $placesService;
     }
 
-    #[Route(name: 'get_places', methods:['GET'])]
+    #[Route(name: 'get_places', methods: ['GET'])]
     public function cget(PlaceRepository $placeRepository): Response
     {
 
@@ -39,18 +38,16 @@ class PlacesController extends AbstractController
     #[Route(name: 'create_place', methods: ['POST'])]
     public function createPlace(Request $request): Response
     {
-        $createPlaceDTO = $this->placesService->createDTO($request->getContent(), CreatePlaceDTO::class);
-
+        $createPlaceDTO = $this->placesService->createDTO($request->getContent(), CreateOrUpdatePlaceDTO::class);
         $place = $this->placesService->createOrUpdate($createPlaceDTO);
 
-        if (!($place instanceof Place)){
+        if (!($place instanceof Place)) {
             return new JsonResponse($place, JsonResponse::HTTP_BAD_REQUEST);
         }
 
         $json = $this->placesService->serializeToJson($place, ['place']);
 
         return new JsonResponse($json, JsonResponse::HTTP_CREATED, [], true);
-        
     }
 
     #[Route('/{id}', name: 'get_place', methods: ['GET'])]
@@ -66,7 +63,7 @@ class PlacesController extends AbstractController
 
 
     #[Route('/{id}', name: 'remove_place', methods: ['DELETE'])]
-    public function removePlace(Place $place=null, ManagerRegistry $doctrine): Response
+    public function removePlace(Place $place = null, ManagerRegistry $doctrine): Response
     {
         if (!($place instanceof Place) || !$place) {
             return new JsonResponse(["id" => "place not found"], JsonResponse::HTTP_NOT_FOUND);
@@ -79,17 +76,17 @@ class PlacesController extends AbstractController
         return new Response('Place with id ' . $id . ' has been successfully removed');
     }
 
-    #[Route('/{id}', name: 'update_place', methods:['PUT'])]
-    public function updatePlace(Place $place=null, Request $request): Response
+    #[Route('/{id}', name: 'update_place', methods: ['PUT'])]
+    public function updatePlace(Place $place = null, Request $request): Response
     {
         if (!($place instanceof Place) || !$place) {
             return new JsonResponse(["id" => "place not found"], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $createPlaceDTO = $this->placesService->createDTO($request->getContent(), CreatePlaceDTO::class);
+        $createPlaceDTO = $this->placesService->createDTO($request->getContent(), CreateOrUpdatePlaceDTO::class);
 
         $place = $this->placesService->createOrUpdate($createPlaceDTO, $place);
-        if (!($place instanceof Place)){
+        if (!($place instanceof Place)) {
             return new JsonResponse($place, JsonResponse::HTTP_BAD_REQUEST);
         }
 
@@ -97,5 +94,4 @@ class PlacesController extends AbstractController
 
         return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
     }
-
 }

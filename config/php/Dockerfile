@@ -12,4 +12,6 @@ RUN composer install --prefer-dist --no-dev --no-scripts --no-progress --no-inte
 
 COPY ../../backend .
 
+WORKDIR /var/www/html
+
 # RUN composer dump-autoload --optimize

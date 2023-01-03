@@ -4,6 +4,7 @@ services:
   server:
     container_name: server
     image: nginx:latest
+    restart: on-failure
     ports:
       - "8080:80"
     volumes:
@@ -14,8 +15,10 @@ services:
     container_name: backend
     build:
       dockerfile: ./config/php/Dockerfile
+    restart: on-failure
     volumes:
       - ./backend:/var/www/html
+    depends_on: [ server ]
 
   #mysql
   db:
@@ -44,8 +47,9 @@ services:
     build:
       dockerfile: ./config/node/Dockerfile
     volumes:
-      # - /app/node_modules
-      - ./frontend:/app
+      - ./frontend/src:/app/src
+      - /app/node_modules
+      # - nodemodules:/app/node_modules
     ports:
       - "4000:3000"
     stdin_open: true
@@ -53,3 +57,4 @@ services:
 
 volumes:
   mysqldata:
+  nodemodules: {}
