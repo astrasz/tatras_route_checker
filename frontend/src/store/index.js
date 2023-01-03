@@ -8,21 +8,21 @@ const placesSlice = createSlice({
     initialState: initialPlacesState,
     reducers: {
         getPlaces: (state, action) => {
-            state = action.payload;
+            return [...action.payload];
         },
         addNewPlace: (state, action) => {
-            return [...state, action.payload]
+            state.push(action.payload)
         },
         updatePlace: (state, action) => {
-            state.map(place => {
-                if (place.id === action.payload.id) {
-                    return { ...place, ...action.payload }
-                }
-                return place;
-            })
+            const index = state.findIndex(place => place.id === action.payload.id);
+            state[index] = {
+                ...state[index],
+                ...action.payload
+            }
         },
         removePlace: (state, action) => {
-            state.filter(place => place.id !== action.payload.id);
+            const index = state.findIndex(place => place.id === action.payload.id);
+            state.splice(index, 1);
         }
 
     }
