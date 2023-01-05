@@ -8,12 +8,11 @@ import { getPlaces, removePlace } from "../store";
 import { Container } from "@mui/system";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { Avatar, Box, Divider, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
+import { Avatar, Divider, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography, LinearProgress } from "@mui/material";
 
 
 // components & pages
 import PlaceForm from "../components/PlaceForm";
-import { purple, red } from "@mui/material/colors";
 
 
 const Places = () => {
@@ -51,47 +50,50 @@ const Places = () => {
 
         <Container>
             <Grid container spacing={2}>
-                <Grid container item xs={12} sm={8} md={7} >
+                <Grid container item xs={12} sm={8} md={7}>
                     <PlaceForm />
                 </Grid>
+
                 <Grid container item xs={12} sm={8} md={5}>
+
                     <Grid item xs={12}>
-                        <List sx={{ width: '100%', color: "primary.contrastText", bgcolor: 'background.paper' }}>
-                            {places && !isLoading && places.map(place => (
-                                <Fragment key={place.id}>
-                                    <ListItem >
-                                        <ListItemAvatar>
-                                            <Avatar sx={{ bgcolor: 'info.main', color: 'inherit' }} variant='square'>H</Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                            primary={place.name}
-                                            secondary={
-                                                <Typography
-                                                    sx={{ display: 'inline' }}
-                                                    component="span"
-                                                    variant="body2"
-                                                >
-                                                    {place.altitude}
-                                                </Typography>
+                        {!isLoading && (
+                            <List sx={{ width: '100%', color: "primary.contrastText", bgcolor: 'background.paper' }}>
+                                {places && !isLoading && places.map(place => (
+                                    <Fragment key={place.id}>
+                                        <ListItem >
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'info.main', color: 'inherit' }} variant='square'>H</Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText
+                                                primary={place.name}
+                                                secondary={
+                                                    <Typography
+                                                        sx={{ display: 'inline' }}
+                                                        component="span"
+                                                        variant="body2"
+                                                    >
+                                                        {place.altitude}
+                                                    </Typography>
 
-                                            }
-                                        />
-                                        <IconButton color="inherit" onClick={() => console.log(place.id)}>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton color="inherit" onClick={() => handleDelete(place.id)}>
-                                            <DeleteIcon />
-                                        </IconButton>
+                                                }
+                                            />
+                                            <IconButton color="inherit" onClick={() => console.log(place.id)}>
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton color="inherit" onClick={() => handleDelete(place.id)}>
+                                                <DeleteIcon />
+                                            </IconButton>
 
-                                    </ListItem>
-                                    <Divider variant="inset" component="li" />
-                                </Fragment>
-                            ))}
-                            {isLoading && (
-                                <h3>Loading...</h3>
-                            )}
-
-                        </List>
+                                        </ListItem>
+                                        <Divider variant="inset" component="li" />
+                                    </Fragment>
+                                ))}
+                            </List>
+                        )}
+                        {isLoading && (
+                            <LinearProgress color="secondary" />
+                        )}
                     </Grid>
                 </Grid>
             </Grid>

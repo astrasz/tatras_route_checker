@@ -1,14 +1,14 @@
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 // mui
-import PlaceIcon from '@mui/icons-material/Place';
-import LiveTvIcon from '@mui/icons-material/LiveTv';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import { AppBar, Tab, Tabs, Toolbar, Typography } from '@mui/material';
-import { blue, pink } from '@mui/material/colors';
+import { red } from '@mui/material/colors';
 import { Box } from '@mui/system';
+
+// components & pages
+import FrontIcon from '../assets/images/front-icon.png'
 
 
 const LinkTab = (props) => {
@@ -23,16 +23,38 @@ const LinkTab = (props) => {
     );
 }
 
-
 const Layout = ({ children }) => {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
     const [tab, setTab] = useState(0);
+
+
+
+    useEffect(() => {
+
+        const currentPath = location.pathname;
+
+        switch (currentPath) {
+            case '/':
+                setTab(0);
+                break;
+            case '/places':
+                setTab(1);
+                break;
+            case '/movies':
+                setTab(2);
+                break;
+            default:
+                break;
+        }
+
+    }, [location.pathname])
+
 
     const handleChangeTab = (event, tab) => {
         setTab(tab);
     };
-
 
     const menuItems = [
         {
@@ -45,17 +67,20 @@ const Layout = ({ children }) => {
         }
     ]
 
-    const accentColor = blue[100]
-
-    // '#f50057'
     return (
-        <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
+        <Box sx={{
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundImage: `url(${FrontIcon})`,
+            minHeight: '100vh'
+        }}>
             <div className="root">
                 {/* appbar */}
                 <AppBar
                     position='sticky'
-                    color='primary'
                     elevation={0}
+                    sx={{ bgcolor: 'rgba(0, 0, 0, 0.2)' }}
                 >
                     <Toolbar onClick={() => {
                         navigate('/')
@@ -64,7 +89,7 @@ const Layout = ({ children }) => {
                     >
                         <LandscapeIcon
                             sx={{
-                                color: accentColor, '&:hover': {
+                                color: red[900], '&:hover': {
                                     cursor: 'pointer'
                                 }
                             }}
@@ -78,18 +103,18 @@ const Layout = ({ children }) => {
                             Tatras Route Checker
                         </Typography>
                         <Typography>
-                            Check before you go!
+                            Check before you go
                         </Typography>
                     </Toolbar>
                 </AppBar>
 
                 {/* menu */}
                 <AppBar
-                    elevation={5}
+                    elevation={20}
                     position='sticky'
-                    color='primary'
+                    sx={{ bgcolor: 'rgba(0, 0, 0, 0.2)' }}
                 >
-                    <Tabs value={tab} onChange={handleChangeTab} centered textColor='inherit' TabIndicatorProps={{ style: { background: 'info' } }}>
+                    <Tabs value={tab} onChange={handleChangeTab} centered textColor='inherit' TabIndicatorProps={{ style: { background: red[900], height: 2 } }}>
                         <Tab icon={<LandscapeIcon />} aria-label="landscape" onClick={() => navigate('/')} />
                         {menuItems.map((item) => (
                             <LinkTab
@@ -103,9 +128,13 @@ const Layout = ({ children }) => {
                 </AppBar>
 
                 {/* content */}
-                <div className='page'>
-                    {children}
-                </div>
+                <>
+                    {location.pathname != '/' && <div className='pages'>
+                        {children}
+                    </div>
+                    }
+                    {location.pathname == '/' && children}
+                </>
             </div>
         </Box >
 
