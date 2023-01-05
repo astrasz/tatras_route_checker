@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Place;
 use App\Service\PlacesService;
 use App\DTO\CreateOrUpdatePlaceDTO;
+use App\Helpers\Traits\SerializerTrait;
 use App\Repository\PlaceRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('api/places')]
 class PlacesController extends AbstractController
 {
+
+    use SerializerTrait;
+
     private PlacesService $placesService;
 
     public function __construct(PlacesService $placesService)
@@ -30,7 +34,7 @@ class PlacesController extends AbstractController
 
         $places = $placeRepository->findAll();
 
-        $json = $this->placesService->serializeToJson($places, ['place']);
+        $json = $this->serializeToJson($places, ['place']);
 
         return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
     }
@@ -38,14 +42,14 @@ class PlacesController extends AbstractController
     #[Route(name: 'create_place', methods: ['POST'])]
     public function createPlace(Request $request): Response
     {
-        $createPlaceDTO = $this->placesService->createDTO($request->getContent(), CreateOrUpdatePlaceDTO::class);
+        $createPlaceDTO = $this->createDTO($request->getContent(), CreateOrUpdatePlaceDTO::class);
         $place = $this->placesService->createOrUpdate($createPlaceDTO);
 
         if (!($place instanceof Place)) {
             return new JsonResponse($place, JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        $json = $this->placesService->serializeToJson($place, ['place']);
+        $json = $this->serializeToJson($place, ['place']);
 
         return new JsonResponse($json, JsonResponse::HTTP_CREATED, [], true);
     }
@@ -56,7 +60,7 @@ class PlacesController extends AbstractController
         if (!($place instanceof Place) || !$place) {
             return new JsonResponse(["id" => "place not found"], JsonResponse::HTTP_NOT_FOUND);
         }
-        $json = $this->placesService->serializeToJson($place, ['place']);
+        $json = $this->serializeToJson($place, ['place']);
 
         return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
     }
@@ -83,14 +87,14 @@ class PlacesController extends AbstractController
             return new JsonResponse(["id" => "place not found"], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $createPlaceDTO = $this->placesService->createDTO($request->getContent(), CreateOrUpdatePlaceDTO::class);
+        $createPlaceDTO = $this->createDTO($request->getContent(), CreateOrUpdatePlaceDTO::class);
 
         $place = $this->placesService->createOrUpdate($createPlaceDTO, $place);
         if (!($place instanceof Place)) {
             return new JsonResponse($place, JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        $json = $this->placesService->serializeToJson($place, ['place']);
+        $json = $this->serializeToJson($place, ['place']);
 
         return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
     }

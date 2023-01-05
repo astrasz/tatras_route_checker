@@ -2,24 +2,20 @@
 
 namespace App\Service;
 
-use App\DTO\BaseDTO;
 use App\Entity\Place;
 use App\DTO\CreateOrUpdatePlaceDTO;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PlacesService
 {
     private ManagerRegistry $doctrine;
     private ValidatorInterface $validator;
-    private SerializerInterface $serializer;
 
-    public function __construct(ManagerRegistry $doctrine, ValidatorInterface $validator, SerializerInterface $serializer)
+    public function __construct(ManagerRegistry $doctrine, ValidatorInterface $validator)
     {
         $this->doctrine = $doctrine;
         $this->validator = $validator;
-        $this->serializer = $serializer;
     }
 
     public function createOrUpdate(CreateOrUpdatePlaceDTO $createPlaceDTO, Place $place = null): Place|array
@@ -56,14 +52,14 @@ class PlacesService
         return $id;
     }
 
-    public function serializeToJson(array|Place $data, array $groups): string
-    {
-        return $this->serializer->serialize($data, 'json', ['groups' => $groups]);
-    }
+    // public function serializeToJson(array|Place $data, array $groups): string
+    // {
+    //     return $this->serializer->serialize($data, 'json', ['groups' => $groups]);
+    // }
 
-    public function createDTO(string $content, $className): BaseDTO
-    {
-        // var_dump($this->serializer);
-        return $this->serializer->deserialize($content, $className, 'json');
-    }
+    // public function createDTO(string $content, $className): BaseDTO
+    // {
+    //     // var_dump($this->serializer);
+    //     return $this->serializer->deserialize($content, $className, 'json');
+    // }
 }
