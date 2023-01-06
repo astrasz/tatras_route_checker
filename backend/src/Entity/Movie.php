@@ -2,77 +2,88 @@
 
 namespace App\Entity;
 
+use App\Helpers\MovieHelper;
 use App\Repository\MovieRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 class Movie
 {
+    #[Groups(['movie'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
 
+    #[Groups(['movie'])]
     #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
-    private string $name;
+    private string $title;
 
+    #[Groups(['movie'])]
     #[ORM\Column(length: 255)]
-    private string $season;
+    private bool $isWinter = false;
 
+    #[Groups(['movie'])]
     #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private string $linkToFile;
 
-    #[Assert\Choice(callback: 'getDifficultyLevels')]
+    #[Groups(['movie'])]
+    #[Assert\Choice(callback: [MovieHelper::class, 'getDifficultyLevels'])]
     #[ORM\Column(length: 255)]
     private string $difficulty;
 
+    #[Groups(['movie'])]
     #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: 'moviesFromStartPoint')]
     private ?Place $startPoint = null;
 
+    #[Groups(['movie'])]
     #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: 'moviesToDestination')]
     private ?Place $destination = null;
 
+    #[Groups(['movie'])]
     #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: 'moviesToEndpoint')]
     private ?Place $endPoint = null;
+
+    #[Groups(['movie'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
 
     public function __construct()
     {
     }
 
-    public static function getDifficultyLevels(): array
-    {
-        return ['easy', 'normal', 'hard'];
-    } 
-
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): string
+    public function getTitle(): string
     {
-        return $this->name;
+        return $this->title;
     }
 
-    public function setName(string $name): self
+    public function setTitle(string $title): self
     {
-        $this->name = $name;
+        $this->title = $title;
 
         return $this;
     }
-    
-    public function getSeason(): string
+
+    public function getIsWinter(): bool
     {
-        return $this->season;
+        return $this->isWinter;
     }
 
-    public function setSeason(string $season): self
+    public function setIsWinter(bool $isWinter): self
     {
-        $this->season = $season;
+        $this->isWinter = $isWinter;
 
         return $this;
     }
@@ -133,6 +144,18 @@ class Movie
     public function setDifficulty(string $difficulty): self
     {
         $this->difficulty = $difficulty;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
