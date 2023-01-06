@@ -2,7 +2,7 @@ import { useState, useEffect, Fragment } from "react"
 import { useSelector, useDispatch } from 'react-redux';
 
 import { fetchPlaces, deletePlace } from "../api";
-import { getPlaces, removePlace } from "../store";
+import { getPlaces, removePlace } from "../store/slices/placesSlice";
 
 // mui
 import { Container } from "@mui/system";

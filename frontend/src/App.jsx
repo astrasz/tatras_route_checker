@@ -7,6 +7,7 @@ import { createTheme } from '@mui/material/styles';
 // pages & components
 import Home from './pages/Home';
 import Places from './pages/Places';
+import Movies from './pages/Movies';
 import Layout from './components/Layout';
 import { pink, red } from '@mui/material/colors';
 
@@ -55,6 +56,10 @@ function App() {
             <Route
               path='/places'
               element={<Places />}
+            />
+            <Route
+              path='/movies'
+              element={<Movies />}
             />
           </Routes>
         </Layout>

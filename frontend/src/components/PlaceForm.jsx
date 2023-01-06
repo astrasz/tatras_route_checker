@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 
 
 import { createPlace } from "../api";
-import { addNewPlace } from "../store";
+import { addNewPlace } from "../store/slices/placesSlice";
 
 
 const PlaceForm = () => {
