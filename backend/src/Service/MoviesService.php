@@ -7,6 +7,7 @@ use App\Entity\Place;
 use App\DTO\AddOrUpdateMovieDTO;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MoviesService
@@ -40,9 +41,8 @@ class MoviesService
 
         if ($addMovieDTO->getStartPointId()) {
             $startPoint = $this->doctrine->getRepository(Place::class)->findOneBy(['id' => $addMovieDTO->getStartPointId()]);
-
             if (!($startPoint instanceof Place)) {
-                throw new BadRequestException('place not found');
+                throw new NotFoundHttpException('Start point not found', null, 404);
             }
 
             $movie->setStartPoint($startPoint);
@@ -52,7 +52,7 @@ class MoviesService
             $destination = $this->doctrine->getRepository(Place::class)->findOneBy(['id' => $addMovieDTO->getDestinationId()]);
 
             if (!($destination instanceof Place)) {
-                throw new BadRequestException('place not found');
+                throw new NotFoundHttpException('Destination not found', null, 404);
             }
 
             $movie->setDestination($destination);
@@ -62,7 +62,7 @@ class MoviesService
             $endPoint = $this->doctrine->getRepository(Place::class)->findOneBy(['id' => $addMovieDTO->getEndPointId()]);
 
             if (!($endPoint instanceof Place)) {
-                throw new BadRequestException('place not found');
+                throw new NotFoundHttpException('End point not found', null, 404);
             }
 
             $movie->setEndPoint($endPoint);

@@ -12,18 +12,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: PlaceRepository::class)]
 class Place
 {
-    #[Groups(['place'])]
+    #[Groups(['place', 'movie'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['place'])]
+    #[Groups(['place', 'movie'])]
     #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[Groups(['place'])]
+    #[Groups(['place', 'movie'])]
     #[Assert\NotBlank]
     #[ORM\Column]
     private ?int $altitude = null;

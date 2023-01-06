@@ -33,7 +33,7 @@ class PlacesController extends AbstractController
     {
 
         $places = $placeRepository->findAll();
-
+        // dd($places);
         $json = $this->serializeToJson($places, ['place']);
 
         return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);

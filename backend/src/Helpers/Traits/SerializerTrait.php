@@ -9,21 +9,30 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 trait SerializerTrait
 {
-
+    /**
+     * @var SerializerInterface|null
+     */
     private $serializer;
 
-    private function setSerializer(SerializerInterface $serializer)
+    /**
+     * @required
+     */
+    public function setSerializer(SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
     }
 
     public function serializeToJson(array|Place|Movie $data, array $groups): string
     {
-        return $this->serializer->serialize($data, 'json', ['groups' => $groups]);
+        if ($this->serializer) {
+            return $this->serializer->serialize($data, 'json', ['groups' => $groups]);
+        }
     }
 
     public function createDTO(string $content, $className): BaseDTO
     {
-        return $this->serializer->deserialize($content, $className, 'json');
+        if ($this->serializer) {
+            return $this->serializer->deserialize($content, $className, 'json');
+        }
     }
 }

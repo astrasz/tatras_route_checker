@@ -87,7 +87,7 @@ class AddOrUpdateMovieDTO extends BaseDTO
         return $this->startPointId;
     }
 
-    public function setStartPoint(?int $startPointId): void
+    public function setStartPointId(?int $startPointId): void
     {
         $this->startPointId = $startPointId;
     }
@@ -100,7 +100,7 @@ class AddOrUpdateMovieDTO extends BaseDTO
         return $this->destinationId;
     }
 
-    public function setDestination(?int $destinationId): void
+    public function setDestinationId(?int $destinationId): void
     {
         $this->destinationId = $destinationId;
     }
