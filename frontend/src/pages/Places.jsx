@@ -1,8 +1,8 @@
 import { useState, useEffect, Fragment } from "react"
 import { useSelector, useDispatch } from 'react-redux';
 
-import { fetchPlaces, deletePlace } from "../api";
-import { getPlaces, removePlace } from "../store";
+import { deletePlace } from "../api";
+import { removePlace } from "../store/slices/placesSlice";
 
 // mui
 import { Container } from "@mui/system";
@@ -33,21 +33,12 @@ const Places = () => {
     }
 
     useEffect(() => {
-        const setPlaces = async () => {
-            const response = await fetchPlaces();
-            const json = await response.json();
-
-            if (response.ok) {
-                dispatch(getPlaces(json));
-                setIsLoading(false);
-            }
+        if (places.length) {
+            setIsLoading(false);
         }
-        setPlaces();
-    }, [])
-
+    }, [places])
 
     return (
-
         <Container>
             <Grid container spacing={2}>
                 <Grid container item xs={12} sm={8} md={7}>
@@ -61,7 +52,7 @@ const Places = () => {
                             <List sx={{ width: '100%', color: "primary.contrastText", bgcolor: 'background.paper' }}>
                                 {places && !isLoading && places.map(place => (
                                     <Fragment key={place.id}>
-                                        <ListItem >
+                                        <ListItem>
                                             <ListItemAvatar>
                                                 <Avatar sx={{ bgcolor: 'info.main', color: 'inherit' }} variant='square'>H</Avatar>
                                             </ListItemAvatar>

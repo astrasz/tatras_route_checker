@@ -1,11 +1,11 @@
-import { Button, Checkbox, FormControlLabel, Grid, TextField, Typography } from "@mui/material";
+import { Button, Grid, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
 import { useDispatch } from 'react-redux';
 
 
 import { createPlace } from "../api";
-import { addNewPlace } from "../store";
+import { addNewPlace } from "../store/slices/placesSlice";
 
 
 const PlaceForm = () => {
@@ -105,19 +105,3 @@ const PlaceForm = () => {
 }
 
 export default PlaceForm;
-
-
-// {/* <div>
-//             <form>
-//                 <label>
-//                     Name:
-//                     <input type="text" name="name" value={name} onChange={(e) => setName(e.target.value)} />
-//                 </label>
-//                 <label>
-//                     Altitude:
-//                     <input type="number" name="altitude" value={altitude} onChange={(e) => setAltitude(e.target.value)} />
-//                 </label>
-//                 <input type="submit" value="Submit" onClick={handleSubmit} />
-//             </form>
-//             {errors && <div>'Please complete all fields'</div>}
-//         </div> */}
