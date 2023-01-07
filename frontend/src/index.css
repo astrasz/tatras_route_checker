@@ -17,19 +17,6 @@ header a {
 
 .pages {
     max-width: 1400px;
-    padding: 60px;
+    padding: 40px;
     margin: 0 auto;
 }
-
-/* .yt-container {
-    overflow: hidden;
-    width: 100%;
-    aspect-ratio: 16/9;
-    pointer-events: none;
-}
-
-.yt-container iframe {
-    width: 300%;
-    height: 100%;
-    margin-left: -100%;
-} */

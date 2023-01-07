@@ -71,9 +71,11 @@ const Layout = ({ children }) => {
         <Box sx={{
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
             backgroundImage: `url(${FrontIcon})`,
-            minHeight: '100vh'
+            backgroundAttachment: "fixed",
+            height: '100vh',
+            overflow: "hidden"
+
         }}>
             <div className="root">
                 {/* appbar */}
@@ -136,6 +138,7 @@ const Layout = ({ children }) => {
                     {location.pathname == '/' && children}
                 </>
             </div>
+            {/* <footer> This is footer, which should be done!</footer> */}
         </Box >
 
     )

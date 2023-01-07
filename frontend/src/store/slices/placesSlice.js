@@ -24,9 +24,11 @@ export const placesSlice = createSlice({
             const index = state.findIndex(place => place.id === action.payload.id);
             state.splice(index, 1);
         }
-
     }
-
 })
+
+export const selectAllPlaces = state => state.places;
+
+export const selectPlaceById = (state, placeId) => state.movies.find((place) => place.id === +placeId);
 
 export const { getPlaces, addNewPlace, updatePlace, removePlace } = placesSlice.actions;
