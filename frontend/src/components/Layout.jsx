@@ -81,61 +81,64 @@ const Layout = ({ children }) => {
                 {/* appbar */}
                 <AppBar
                     position='sticky'
-                    elevation={0}
-                    sx={{ bgcolor: 'rgba(0, 0, 0, 0.2)' }}
+                    elevation={20}
+                    sx={{ bgcolor: 'rgba(0, 0, 0, 0.3)' }}
                 >
-                    <Toolbar onClick={() => {
-                        navigate('/')
-                        setTab(0)
-                    }}
+                    <Toolbar
+                        sx={{ justifyContent: 'space-between' }}
                     >
-                        <LandscapeIcon
-                            sx={{
-                                color: red[900], '&:hover': {
+                        <Box
+                            onClick={() => {
+                                navigate('/')
+                                setTab(0)
+                            }}
+                            display='flex'
+                        >
+                            <LandscapeIcon
+                                sx={{
+                                    color: red[900], '&:hover': {
+                                        cursor: 'pointer'
+                                    },
+                                }}
+                                fontSize='large'
+
+                            />
+                            <Typography variant='h5' component='a' sx={{
+                                marginLeft: 1, flexGrow: 0, '&:hover': {
                                     cursor: 'pointer'
                                 }
                             }}
-                            fontSize='large'
-                        />
-                        <Typography variant='h5' component='a' sx={{
-                            marginLeft: 1, flexGrow: 1, '&:hover': {
-                                cursor: 'pointer'
-                            }
-                        }}>
-                            Tatras Route Checker
-                        </Typography>
-                        <Typography>
-                            Check before you go
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-
-                {/* menu */}
-                <AppBar
-                    elevation={20}
-                    position='sticky'
-                    sx={{ bgcolor: 'rgba(0, 0, 0, 0.2)' }}
-                >
-                    <Tabs value={tab} onChange={handleChangeTab} centered textColor='inherit' TabIndicatorProps={{ style: { background: red[900], height: 2 } }}>
-                        <Tab icon={<LandscapeIcon />} aria-label="landscape" onClick={() => navigate('/')} />
-                        {menuItems.map((item) => (
-                            <LinkTab
-                                key={item.text}
-                                onClick={() => navigate(item.path)}
-                                label={item.text}
                             >
-                            </LinkTab>
-                        ))}
-                    </Tabs>
+                                Tatras Route Checker
+                            </Typography>
+                        </Box>
+                        <Tabs value={tab} onChange={handleChangeTab} centered textColor='inherit' TabIndicatorProps={{ style: { background: red[900], height: 2 } }}>
+                            <Tab icon={<LandscapeIcon />} aria-label="landscape" onClick={() => navigate('/')} />
+                            {menuItems.map((item) => (
+                                <LinkTab
+                                    key={item.text}
+                                    onClick={() => { navigate(`..${item.path}`, { replace: true }) }}
+                                    label={item.text}
+                                >
+                                </LinkTab>
+                            ))}
+                        </Tabs>
+                        <Box>
+                            <Typography>
+                                Check before you go
+                            </Typography>
+                        </Box>
+                    </Toolbar>
+
                 </AppBar>
 
                 {/* content */}
                 <>
-                    {location.pathname != '/' && <div className='pages'>
+                    {location.pathname !== '/' && <div className='pages'>
                         {children}
                     </div>
                     }
-                    {location.pathname == '/' && children}
+                    {location.pathname === '/' && children}
                 </>
             </div>
             {/* <footer> This is footer, which should be done!</footer> */}

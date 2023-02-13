@@ -11,12 +11,13 @@
 }
 
 header a {
-    color: #fff;
-    text-decoration: none;
+    /* color: rgb(255, 255, 254); */
+    /* color: #2ec5d3; */
+    /* text-decoration: none; */
 }
 
 .pages {
-    max-width: 1400px;
-    padding: 40px;
+    /* max-width: 1600px; */
+    padding: 20px;
     margin: 0 auto;
 }

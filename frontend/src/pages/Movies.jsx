@@ -40,7 +40,7 @@ const Movies = () => {
 
     return (
         <Container>
-            <Stack flexDirection='row' justifyContent='space-between' sx={{ pb: 10 }}>
+            <Stack flexDirection='row' justifyContent='space-between' sx={{ pb: 5, pt: 5 }}>
                 <Box
                     sx={{
                         width: { xs: 200, md: 400, lg: 600 },
