@@ -21,7 +21,7 @@ const MovieDetails = () => {
         <Container>
             {movie && (
                 <Card sx={{
-                    maxHeight: '70vh', overflowY: 'scroll', color: 'primary.contrastText', '&::-webkit-scrollbar': {
+                    maxHeight: '85vh', overflowY: 'scroll', color: 'primary.contrastText', '&::-webkit-scrollbar': {
                         width: '0.4em',
                     },
                     '&::-webkit-scrollbar-track': {
@@ -41,10 +41,10 @@ const MovieDetails = () => {
                 }}>
                     <CardMedia
                         component="iframe"
-                        height="400px"
+                        width='100%'
                         src={'https://youtube.com/embed/' + movieId + '?version=3&amp;rel=0&autoplay=1;'}
                         alt={movie.title}
-                        sx={{ '&:hover': { cursor: 'pointer' } }}
+                        sx={{ '&:hover': { cursor: 'pointer' }, aspectRatio: '21/9' }}
                         frameborder="0"
                         allowFullScreen
                     />

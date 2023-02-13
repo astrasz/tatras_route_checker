@@ -40,7 +40,7 @@ const Places = () => {
 
     return (
         <Container>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} pt={5}>
                 <Grid container item xs={12} sm={8} md={7}>
                     <PlaceForm />
                 </Grid>
