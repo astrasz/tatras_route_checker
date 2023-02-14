@@ -5,7 +5,10 @@ namespace App\Helpers\Traits;
 use App\DTO\BaseDTO;
 use App\Entity\Movie;
 use App\Entity\Place;
+use App\Service\Serializer\DTOSerializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 
 trait SerializerTrait
 {
@@ -31,6 +34,7 @@ trait SerializerTrait
 
     public function createDTO(string $content, $className): BaseDTO
     {
+
         if ($this->serializer) {
             return $this->serializer->deserialize($content, $className, 'json');
         }

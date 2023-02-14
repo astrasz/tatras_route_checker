@@ -43,9 +43,18 @@ class MoviesController extends AbstractController
     {
         try {
 
-            $addMovieDTO = $this->createDTO($request->getContent(), AddOrUpdateMovieDTO::class);
-            $movie = $this->moviesService->createOrUpdate($addMovieDTO);
+            $content  = $request->toArray();
+            foreach ($content as $key => $param) {
+                if ($param === '')
+                    $content[$key] = null;
+            }
 
+
+            $addMovieDTO = $this->createDTO(json_encode($content), AddOrUpdateMovieDTO::class);
+            // dd(['wchodze' => $addMovieDTO]);
+
+            $movie = $this->moviesService->createOrUpdate($addMovieDTO);
+            // dd('movie', $movie);
             if (!($movie instanceof Movie)) {
                 return new JsonResponse($movie, JsonResponse::HTTP_BAD_REQUEST);
             }

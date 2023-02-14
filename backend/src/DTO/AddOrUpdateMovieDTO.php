@@ -26,6 +26,8 @@ class AddOrUpdateMovieDTO extends BaseDTO
     #[Assert\Choice(callback: [MovieHelper::class, 'getDifficultyLevels'])]
     private ?string $difficulty;
 
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
     private ?int $startPointId;
 
     private ?int $destinationId;
@@ -34,6 +36,8 @@ class AddOrUpdateMovieDTO extends BaseDTO
 
     private ?string $description;
 
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
     private ?bool $isWinter;
 
 
