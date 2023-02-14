@@ -15,8 +15,12 @@ import { useNavigate } from 'react-router-dom';
 
 const MovieCard = ({ movie }) => {
     const navigate = useNavigate();
-
-    const movieId = movie.linkToFile.split("v=")[1].substring(0, 11);
+    let movieId;
+    if (movie.linkToFile.includes('embed?')) {
+        movieId = movie.linkToFile.split("v=")[1].substring(0, 11);
+    } else {
+        movieId = movie.linkToFile.slice(-11);
+    }
     const difficultyLetter = movie.difficulty.substring(0, 1).toUpperCase()
 
     let avatarBackgroudColor = 'info.main';

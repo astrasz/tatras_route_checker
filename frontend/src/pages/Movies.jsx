@@ -12,6 +12,8 @@ import { Box } from '@mui/system';
 // components & pages
 import MovieCard from "../components/MovieCard";
 import Search from "../components/Search";
+import ModalBox from "../components/ModalBox";
+import MovieForm from "../components/MovieForm";
 
 
 
@@ -19,8 +21,12 @@ const Movies = () => {
 
     const dispatch = useDispatch();
     const movies = useSelector(state => state.movies);
+    const places = useSelector(state => state.places)
 
     const [isLoading, setIsLoading] = useState(true);
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     // TO DO: handling errors from backend
     const handleDelete = async (id) => {
@@ -31,6 +37,8 @@ const Movies = () => {
             dispatch(removeMovie(id))
         }
     }
+
+
 
     useEffect(() => {
         if (movies.length) {
@@ -50,10 +58,16 @@ const Movies = () => {
                 >
                     <Search lineHeight='15px' size='small' />
                 </Box>
-                <Button variant="contained" endIcon={<AddIcon />} sx={{
+                <Button onClick={handleOpen} variant="contained" endIcon={<AddIcon />} sx={{
                     backgroundColor: "secondary.main"
                 }}>ADD</Button>
             </Stack>
+            <ModalBox
+                open={open}
+                handleClose={handleClose}
+            >
+                <MovieForm places={places} />
+            </ ModalBox>
 
             <Grid container spacing={4} sx={{
                 maxHeight: '55vh', overflow: 'scroll',
