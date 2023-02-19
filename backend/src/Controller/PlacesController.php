@@ -8,6 +8,7 @@ use App\DTO\CreateOrUpdatePlaceDTO;
 use App\Helpers\Traits\SerializerTrait;
 use App\Repository\PlaceRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,7 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('api/places')]
-class PlacesController extends AbstractController
+class PlacesController extends ApiController
 {
 
     use SerializerTrait;
@@ -31,71 +32,90 @@ class PlacesController extends AbstractController
     #[Route(name: 'get_places', methods: ['GET'])]
     public function cget(PlaceRepository $placeRepository): Response
     {
+        try {
+            $places = $placeRepository->findAll();
+            $json = $this->serializeToJson($places, ['place']);
 
-        $places = $placeRepository->findAll();
-        // dd($places);
-        $json = $this->serializeToJson($places, ['place']);
-
-        return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
+            return $this->returnSuccessResponse(json_decode($json));
+        } catch (Exception $e) {
+            return $this->returnFailureResponse($e->getMessage(), $e->getCode());
+        }
     }
 
     #[Route(name: 'create_place', methods: ['POST'])]
     public function createPlace(Request $request): Response
     {
-        $createPlaceDTO = $this->createDTO($request->getContent(), CreateOrUpdatePlaceDTO::class);
-        $place = $this->placesService->createOrUpdate($createPlaceDTO);
+        try {
+            $createPlaceDTO = $this->createDTO($request->getContent(), CreateOrUpdatePlaceDTO::class);
+            $place = $this->placesService->createOrUpdate($createPlaceDTO);
 
-        if (!($place instanceof Place)) {
-            return new JsonResponse($place, JsonResponse::HTTP_BAD_REQUEST);
+            if (!($place instanceof Place)) {
+                return new JsonResponse($place, JsonResponse::HTTP_BAD_REQUEST);
+            }
+
+            $json = $this->serializeToJson($place, ['place']);
+
+            return $this->returnSuccessResponse(json_decode($json), JsonResponse::HTTP_CREATED);
+        } catch (Exception $e) {
+            return $this->returnFailureResponse($e->getMessage(), $e->getCode());
         }
-
-        $json = $this->serializeToJson($place, ['place']);
-
-        return new JsonResponse($json, JsonResponse::HTTP_CREATED, [], true);
     }
 
     #[Route('/{id}', name: 'get_place', methods: ['GET'])]
     public function getPlace(Place $place): Response
     {
-        if (!($place instanceof Place) || !$place) {
-            return new JsonResponse(["id" => "place not found"], JsonResponse::HTTP_NOT_FOUND);
-        }
-        $json = $this->serializeToJson($place, ['place']);
+        try {
+            if (!($place instanceof Place) || !$place) {
+                return new JsonResponse(["id" => "place not found"], JsonResponse::HTTP_NOT_FOUND);
+            }
+            $json = $this->serializeToJson($place, ['place']);
 
-        return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
+
+            return $this->returnSuccessResponse(json_decode($json));
+        } catch (Exception $e) {
+            return $this->returnFailureResponse($e->getMessage(), $e->getCode());
+        }
     }
 
 
     #[Route('/{id}', name: 'remove_place', methods: ['DELETE'])]
     public function removePlace(Place $place = null, ManagerRegistry $doctrine): Response
     {
-        if (!($place instanceof Place) || !$place) {
-            return new JsonResponse(["id" => "place not found"], JsonResponse::HTTP_NOT_FOUND);
+        try {
+            if (!($place instanceof Place) || !$place) {
+                return new JsonResponse(["id" => "place not found"], JsonResponse::HTTP_NOT_FOUND);
+            }
+
+            $id = $place->getId();
+            $doctrine->getManager()->remove($place);
+            $doctrine->getManager()->flush();
+
+            return $this->returnSuccessResponse(sprintf('Place with id %s has been successfully removed', $id));
+        } catch (Exception $e) {
+            return $this->returnFailureResponse($e->getMessage(), $e->getCode());
         }
-
-        $id = $place->getId();
-        $doctrine->getManager()->remove($place);
-        $doctrine->getManager()->flush();
-
-        return new Response('Place with id ' . $id . ' has been successfully removed');
     }
 
     #[Route('/{id}', name: 'update_place', methods: ['PUT'])]
     public function updatePlace(Place $place = null, Request $request): Response
     {
-        if (!($place instanceof Place) || !$place) {
-            return new JsonResponse(["id" => "place not found"], JsonResponse::HTTP_NOT_FOUND);
+        try {
+            if (!($place instanceof Place) || !$place) {
+                return new JsonResponse(["id" => "place not found"], JsonResponse::HTTP_NOT_FOUND);
+            }
+
+            $createPlaceDTO = $this->createDTO($request->getContent(), CreateOrUpdatePlaceDTO::class);
+
+            $place = $this->placesService->createOrUpdate($createPlaceDTO, $place);
+            if (!($place instanceof Place)) {
+                return new JsonResponse($place, JsonResponse::HTTP_BAD_REQUEST);
+            }
+
+            $json = $this->serializeToJson($place, ['place']);
+
+            return $this->returnSuccessResponse(json_decode($json));
+        } catch (Exception $e) {
+            return $this->returnFailureResponse($e->getMessage(), $e->getCode());
         }
-
-        $createPlaceDTO = $this->createDTO($request->getContent(), CreateOrUpdatePlaceDTO::class);
-
-        $place = $this->placesService->createOrUpdate($createPlaceDTO, $place);
-        if (!($place instanceof Place)) {
-            return new JsonResponse($place, JsonResponse::HTTP_BAD_REQUEST);
-        }
-
-        $json = $this->serializeToJson($place, ['place']);
-
-        return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
     }
 }
