@@ -21,12 +21,9 @@ export const login = async (credentials) => {
 
 
 // places
-export const fetchPlaces = async ({ token }) => {
+export const fetchPlaces = async () => {
     return await fetch('/api/places', {
         method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
     })
 }
 

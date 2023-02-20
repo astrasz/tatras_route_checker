@@ -62,21 +62,18 @@ function App() {
       }
     }
     setMovies();
+    const setPlaces = async () => {
+      const response = await fetchPlaces();
+      const json = await response.json();
 
-    if (user) {
-      const setPlaces = async () => {
-        const response = await fetchPlaces({ token: user });
-        const json = await response.json();
-
-        if (response.ok) {
-          dispatch(getPlaces(json));
-          // setIsLoading(false);
-        }
+      if (response.ok) {
+        dispatch(getPlaces(json.message));
+        // setIsLoading(false);
       }
-      setPlaces();
     }
+    setPlaces();
 
-  }, [user])
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>

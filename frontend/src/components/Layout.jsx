@@ -113,7 +113,8 @@ const Layout = ({ children }) => {
             backgroundImage: `url(${FrontIcon})`,
             backgroundAttachment: "fixed",
             height: '100vh',
-            overflow: "hidden"
+            overflow: "hidden",
+            minWidth: 400
 
         }}>
             <div className="root">
