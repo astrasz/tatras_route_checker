@@ -4,7 +4,7 @@ namespace App\DTO;
 
 use App\DTO\BaseDTO;
 use App\Entity\Place;
-use App\Helpers\MovieHelper;
+use App\Helper\MovieHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 
 

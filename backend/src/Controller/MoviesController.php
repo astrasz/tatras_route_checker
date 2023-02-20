@@ -6,7 +6,7 @@ use App\Entity\Movie;
 use App\Service\MoviesService;
 use App\DTO\AddOrUpdateMovieDTO;
 use App\Repository\MovieRepository;
-use App\Helpers\Traits\SerializerTrait;
+use App\Helper\Traits\SerializerTrait;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;

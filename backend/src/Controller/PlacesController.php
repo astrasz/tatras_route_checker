@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Place;
 use App\Service\PlacesService;
 use App\DTO\CreateOrUpdatePlaceDTO;
-use App\Helpers\Traits\SerializerTrait;
+use App\Helper\Traits\SerializerTrait;
 use App\Repository\PlaceRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;

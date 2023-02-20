@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuthContext } from '../hooks/useAuthContext';
+import useStorage from '../hooks/useStorage';
 
 // mui
 import LandscapeIcon from '@mui/icons-material/Landscape';
@@ -32,7 +33,8 @@ const Layout = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [tab, setTab] = useState(0);
-    const { user } = useAuthContext()
+    const { user, setUser } = useAuthContext();
+    const { removeItem } = useStorage();
 
     const [openLogin, setOpenLogin] = useState(false);
     const [openSignup, setOpenSignup] = useState(false);
@@ -99,6 +101,10 @@ const Layout = ({ children }) => {
         setOpenSignup(true)
     }
 
+    const handleLogout = () => {
+        setUser(null);
+        removeItem('user');
+    }
 
     return (
         <Box sx={{
@@ -192,6 +198,7 @@ const Layout = ({ children }) => {
                                     cursor: 'pointer'
                                 }
                             }}
+                                onClick={handleLogout}
                             >
                                 LOGOUT
                             </Typography>)}
