@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Helper\MovieHelper;
 use App\Repository\MovieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Boolean;
@@ -54,9 +56,21 @@ class Movie
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\ManyToOne(inversedBy: 'addedVideos')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $seter = null;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'likedVideos')]
+    private Collection $likers;
+
+    #[ORM\OneToMany(mappedBy: 'target', targetEntity: Comment::class, orphanRemoval: true)]
+    private Collection $comments;
+
 
     public function __construct()
     {
+        $this->likers = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -156,6 +170,75 @@ class Movie
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getSeter(): ?User
+    {
+        return $this->seter;
+    }
+
+    public function setSeter(?User $seter): self
+    {
+        $this->seter = $seter;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getLikers(): Collection
+    {
+        return $this->likers;
+    }
+
+    public function addLiker(User $liker): self
+    {
+        if (!$this->likers->contains($liker)) {
+            $this->likers->add($liker);
+            $liker->addLikedVideo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLiker(User $liker): self
+    {
+        if ($this->likers->removeElement($liker)) {
+            $liker->removeLikedVideo($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setTarget($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getTarget() === $this) {
+                $comment->setTarget(null);
+            }
+        }
 
         return $this;
     }

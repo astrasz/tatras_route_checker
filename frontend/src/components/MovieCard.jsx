@@ -10,10 +10,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { Box } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 
 
 const MovieCard = ({ movie }) => {
+    const { user } = useAuthContext();
     const navigate = useNavigate();
     let movieId;
     if (movie.linkToFile.includes('embed?')) {

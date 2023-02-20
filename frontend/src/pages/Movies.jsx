@@ -14,11 +14,13 @@ import MovieCard from "../components/MovieCard";
 import Search from "../components/Search";
 import ModalBox from "../components/ModalBox";
 import MovieForm from "../components/MovieForm";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 
 
 const Movies = () => {
 
+    const { user } = useAuthContext();
     const dispatch = useDispatch();
     const movies = useSelector(state => state.movies);
     const places = useSelector(state => state.places)
@@ -58,9 +60,9 @@ const Movies = () => {
                 >
                     <Search lineHeight='15px' size='small' />
                 </Box>
-                <Button onClick={handleOpen} variant="contained" endIcon={<AddIcon />} sx={{
+                {!!user && <Button onClick={handleOpen} variant="contained" endIcon={<AddIcon />} sx={{
                     backgroundColor: "secondary.main"
-                }}>ADD</Button>
+                }}>ADD</Button>}
             </Stack>
             <ModalBox
                 open={open}
