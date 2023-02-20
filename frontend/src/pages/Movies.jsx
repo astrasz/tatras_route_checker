@@ -51,9 +51,9 @@ const Movies = () => {
             <Stack flexDirection='row' justifyContent='space-between' sx={{ pb: 5, pt: 5 }}>
                 <Box
                     sx={{
-                        width: { xs: 200, md: 400, lg: 600 },
+                        width: { xs: 400, md: 400, lg: 600 },
                         display: 'flex',
-                        flexWrap: 'wrap',
+                        flexWrap: 'no wrap',
                     }}
                 >
                     <Search lineHeight='15px' size='small' />

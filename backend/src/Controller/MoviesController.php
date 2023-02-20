@@ -6,17 +6,16 @@ use App\Entity\Movie;
 use App\Service\MoviesService;
 use App\DTO\AddOrUpdateMovieDTO;
 use App\Repository\MovieRepository;
-use App\Helpers\Traits\SerializerTrait;
+use App\Helper\Traits\SerializerTrait;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('api/movies')]
-class MoviesController extends AbstractController
+class MoviesController extends ApiController
 {
 
     use SerializerTrait;
@@ -31,85 +30,96 @@ class MoviesController extends AbstractController
     #[Route(name: 'app_movies', methods: ['GET'])]
     public function cget(MovieRepository $movieRepository): JsonResponse
     {
-        $movies = $movieRepository->findAll();
+        try {
+            $movies = $movieRepository->findAll();
 
-        $json = $this->serializeToJson($movies, ['movie']);
+            $json = $this->serializeToJson($movies, ['movie']);
 
-        return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
+            return $this->returnSuccessResponse(json_decode($json));
+        } catch (Exception $e) {
+            return $this->returnFailureResponse($e->getMessage(), $e->getCode());
+        }
     }
 
     #[Route(name: 'add_movie', methods: ['POST'])]
-    public function addMovie(Request $request): Response
+    public function addMovie(Request $request): JsonResponse
     {
         try {
-
             $content  = $request->toArray();
             foreach ($content as $key => $param) {
                 if ($param === '')
                     $content[$key] = null;
             }
 
-
             $addMovieDTO = $this->createDTO(json_encode($content), AddOrUpdateMovieDTO::class);
-            // dd(['wchodze' => $addMovieDTO]);
 
             $movie = $this->moviesService->createOrUpdate($addMovieDTO);
-            // dd('movie', $movie);
             if (!($movie instanceof Movie)) {
-                return new JsonResponse($movie, JsonResponse::HTTP_BAD_REQUEST);
+                return $this->returnFailureResponse($movie, JsonResponse::HTTP_BAD_REQUEST);
             }
 
             $json = $this->serializeToJson($movie, ['movie']);
 
-            return new JsonResponse($json, JsonResponse::HTTP_CREATED, [], true);
+            return $this->returnSuccessResponse(json_decode($json), JsonResponse::HTTP_CREATED);
         } catch (Exception $e) {
-            return new JsonResponse(["id" => $e->getMessage()], $e->getCode());
+            return $this->returnFailureResponse(["id" => $e->getMessage()], $e->getCode());
         }
     }
 
 
     #[Route('/{id}', name: 'get_movie', methods: ['GET'])]
-    public function getMovie(Movie $movie = null): Response
+    public function getMovie(Movie $movie = null): JsonResponse
     {
+        try {
+            if (!($movie instanceof Movie) || !$movie) {
+                return $this->returnFailureResponse(["id" => "Movie not found"], JsonResponse::HTTP_NOT_FOUND);
+            }
+            $json = $this->serializeToJson($movie, ['movie']);
 
-        if (!($movie instanceof Movie) || !$movie) {
-            return new JsonResponse(["id" => "Movie not found"], JsonResponse::HTTP_NOT_FOUND);
+            return $this->returnSuccessResponse(json_decode($json));
+        } catch (Exception $e) {
+            return $this->returnFailureResponse($e->getMessage(), $e->getCode());
         }
-        $json = $this->serializeToJson($movie, ['movie']);
-
-        return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
     }
 
     #[Route('/{id}', name: 'remove_movie', methods: ['DELETE'])]
-    public function removeMovie(Movie $movie = null, ManagerRegistry $doctrine): Response
+    public function removeMovie(Movie $movie = null, ManagerRegistry $doctrine): JsonResponse
     {
-        if (!($movie instanceof Movie) || !$movie) {
-            return new JsonResponse(["id" => "Movie not found"], JsonResponse::HTTP_NOT_FOUND);
+        try {
+            if (!($movie instanceof Movie) || !$movie) {
+                return $this->returnFailureResponse(["id" => "Movie not found"], JsonResponse::HTTP_NOT_FOUND);
+            }
+
+            $id = $movie->getId();
+            $doctrine->getManager()->remove($movie);
+            $doctrine->getManager()->flush();
+
+            return $this->returnSuccessResponse(sprintf('Movie with id %s has been successfully removed', $id));
+        } catch (Exception $e) {
+            return $this->returnFailureResponse($e->getMessage(), $e->getCode());
         }
-
-        $id = $movie->getId();
-        $doctrine->getManager()->remove($movie);
-        $doctrine->getManager()->flush();
-
-        return new Response('Movie with id ' . $id . ' has been successfully removed');
     }
 
     #[Route('/{id}', name: 'update_movie', methods: ['PUT'])]
-    public function updateMovie(Movie $movie = null, Request $request): Response
+    public function updateMovie(Movie $movie = null, Request $request): JsonResponse
     {
-        if (!($movie instanceof Movie) || !$movie) {
-            return new JsonResponse(["id" => "Movie not found"], JsonResponse::HTTP_NOT_FOUND);
+        try {
+            if (!($movie instanceof Movie) || !$movie) {
+                return $this->returnFailureResponse(["id" => "Movie not found"], JsonResponse::HTTP_NOT_FOUND);
+            }
+
+            $addMovieDTO = $this->createDTO($request->getContent(), AddOrUpdateMovieDTO::class);
+
+            $movie = $this->moviesService->createOrUpdate($addMovieDTO, $movie);
+            if (!($movie instanceof Movie)) {
+                return $this->returnFailureResponse($movie, JsonResponse::HTTP_BAD_REQUEST);
+            }
+
+            $json = $this->serializeToJson($movie, ['movie']);
+
+            return $this->returnSuccessResponse(json_decode($json));
+        } catch (Exception $e) {
+            return $this->returnFailureResponse($e->getMessage(), $e->getCode());
         }
-
-        $addMovieDTO = $this->createDTO($request->getContent(), AddOrUpdateMovieDTO::class);
-
-        $movie = $this->moviesService->createOrUpdate($addMovieDTO, $movie);
-        if (!($movie instanceof Movie)) {
-            return new JsonResponse($movie, JsonResponse::HTTP_BAD_REQUEST);
-        }
-
-        $json = $this->serializeToJson($movie, ['movie']);
-
-        return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
     }
 }

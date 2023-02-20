@@ -7,14 +7,17 @@ import store from './store/index'
 //components & styles
 import App from './App';
 import './index.css';
+import { AuthContextProvider } from './context/auth-context';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <AuthContextProvider>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </AuthContextProvider>
   </React.StrictMode>
 );
 

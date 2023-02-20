@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuthContext } from './hooks/useAuthContext';
 
 // mui
 import { ThemeProvider, Box } from '@mui/material'
@@ -9,7 +10,6 @@ import Home from './pages/Home';
 import Places from './pages/Places';
 import Movies from './pages/Movies';
 import Layout from './components/Layout';
-import { pink, red } from '@mui/material/colors';
 import MovieDetails from './pages/MovieDetails';
 import { fetchMovies, fetchPlaces } from './api';
 import { getMovies } from './store/slices/moviesSlice';
@@ -49,6 +49,7 @@ const theme = createTheme({
 function App() {
 
   const dispatch = useDispatch();
+  const { user } = useAuthContext();
 
   useEffect(() => {
     const setMovies = async () => {
@@ -56,26 +57,23 @@ function App() {
       const json = await response.json();
 
       if (response.ok) {
-        dispatch(getMovies(json));
+        dispatch(getMovies(json.message));
         // setIsLoading(false);
       }
     }
-
+    setMovies();
     const setPlaces = async () => {
       const response = await fetchPlaces();
       const json = await response.json();
 
       if (response.ok) {
-        dispatch(getPlaces(json));
+        dispatch(getPlaces(json.message));
         // setIsLoading(false);
       }
     }
-
-
     setPlaces();
-    setMovies();
-  }, [])
 
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>
@@ -89,7 +87,7 @@ function App() {
             />
             <Route
               path='/places'
-              element={<Places />}
+              element={user ? <Places /> : <Navigate to='/' />}
             />
             <Route
               path='/movies'

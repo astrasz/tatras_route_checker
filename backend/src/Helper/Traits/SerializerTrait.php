@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers\Traits;
+namespace App\Helper\Traits;
 
 use App\DTO\BaseDTO;
 use App\Entity\Movie;
